@@ -30,8 +30,10 @@ jobs:
           rustup target add wasm32-unknown-unknown --toolchain nightly
           curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
-      - name: Cache & Build wasm
+      - name: Cache wasm
         uses: Swatinem/rust-cache@v2
+        
+      - name: Build wasm
         run: |
           npm run wasm:build
 
