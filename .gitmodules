@@ -1,0 +1,6 @@
+[submodule "ButterflySoulEngine"]
+	path = ButterflySoulEngine
+	url = git@github.com:xiao-e-yun/ButterflySoulEngine.git
+[submodule "ButterflySoulEngine.web"]
+	path = ButterflySoulEngine.web
+	url = git@github.com:xiao-e-yun/ButterflySoulEngine.web.git
