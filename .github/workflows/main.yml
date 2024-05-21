@@ -9,15 +9,13 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
+        with:
+          submodules: recursive
 
       - name: Install
         run: |
           npm install
           curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-
-      - name: Install
-        run: |
-          ls ButterflySoulEngine.web
 
       - name: Build
         run: |
