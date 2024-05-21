@@ -1,9 +1,5 @@
 name: Build and Deploy
-on: 
-  workflow_dispatch
-  push:
-    tags:        
-      - '**'           # Push events to every tag including hierarchical tags like v1.0/beta
+on: [push,workflow_dispatch]
 permissions:
   contents: write
 jobs:
