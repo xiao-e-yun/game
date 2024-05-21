@@ -1,5 +1,9 @@
 name: Build and Deploy
-on: [push,workflow_dispatch]
+on: 
+  workflow_dispatch
+  push:
+    tags:        
+      - '**'           # Push events to every tag including hierarchical tags like v1.0/beta
 permissions:
   contents: write
 jobs:
@@ -13,17 +17,47 @@ jobs:
           submodules: recursive
           token: ${{ secrets.ACCESS_TOKEN }}
 
-      - name: Install
+      - name: Cache NPM dependencies
+          uses: actions/cache@v1
+          with:
+            path: ~/.npm
+            key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+            restore-keys: |
+              ${{ runner.OS }}-npm-cache-
+
+      - name: Install Node dependencies
+        run: npm install
+
+      - name: Install rust and wasm-pack
         run: |
-          npm install
           rustup update nightly
           rustup target add wasm32-unknown-unknown --toolchain nightly
           curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
-      - name: Build
+      - name: Cache & Build wasm
+        uses: Swatinem/rust-cache@v2
         run: |
           npm run wasm:build
+
+      - name: Build
+        run: |
           npm run build
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+        ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-
+        
+      - name: Cache Rust dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cargo
+          key: ${{ runner.os }}-rust-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+        ${{ runner.os }}-rust-${{ hashFiles('**/Cargo.lock') }}-
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
