@@ -32,7 +32,10 @@ jobs:
 
       - name: Cache wasm
         uses: Swatinem/rust-cache@v2
-        
+        with: 
+            workspaces: wasm
+
+
       - name: Build wasm
         run: |
           npm run wasm:build
